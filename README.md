@@ -37,7 +37,7 @@ It helps students, educators, and enthusiasts explore "what-if" scenarios while 
 
 ---
 
-## 🚀 How It Works  
+##  How It Works  
 1. User enters asteroid parameters.  
 2. The physics engine calculates the impact energy, crater diameter, and shockwave radius.  
 3. The system fetches asteroid orbital data from NASA APIs (if available).  
@@ -46,7 +46,7 @@ It helps students, educators, and enthusiasts explore "what-if" scenarios while 
 ---
 
 ##  Demo  
-🎥 **Video Demo (YouTube)**: https://youtu.be/ikjbc3Udd1g  
+ **Video Demo (YouTube)**: https://youtu.be/ikjbc3Udd1g  
 
 ---
 
