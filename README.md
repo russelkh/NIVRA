@@ -46,8 +46,7 @@ It helps students, educators, and enthusiasts explore "what-if" scenarios while 
 ---
 
 ## 📸 Demo  
-🎥 **Video Demo (YouTube)**: [Add link here]  
-📊 **Slide Deck (7 slides)**: [Add link here]  
+🎥 **Video Demo (YouTube)**: https://youtu.be/ikjbc3Udd1g  
 
 ---
 
