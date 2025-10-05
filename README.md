@@ -1,4 +1,4 @@
-# 🌍☄️ Asteroid Impact Simulation Tool  
+# ☄️ Asteroid Impact Simulation Tool  
 
 **Project Giga HACKS – NASA Space Apps Challenge 2025**  
 
@@ -45,12 +45,12 @@ It helps students, educators, and enthusiasts explore "what-if" scenarios while 
 
 ---
 
-## 📸 Demo  
+##  Demo  
 🎥 **Video Demo (YouTube)**: https://youtu.be/ikjbc3Udd1g  
 
 ---
 
-## 🌌 Why It Matters  
+##  Why It Matters  
 This project helps:  
 - Raise **public awareness** of asteroid risks and planetary defense.  
 - Provide an **educational tool** for teachers and students.  
@@ -58,7 +58,7 @@ This project helps:
 
 ---
 
-## 🤖 Use of AI  
+##  Use of AI  
 We used AI-assisted tools (ChatGPT) for **debugging, documentation, and refining simulation logic**. All code and visuals were developed and validated by our team.  
 
 ---
