@@ -1,0 +1,311 @@
+<!-- [file name]: index.html -->
+<!-- [file content begin] -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NIVRA</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <!-- Three.js + examples -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170/build/three.module.js",
+        "jsm/": "https://cdn.jsdelivr.net/npm/three@0.170/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Left Panel: Meteor Selection & Controls -->
+    <div class="left-panel">
+      <div class="header">
+        <h1 class="title">NIVRA</h1><p class="subtitle">Meteor impact visualization system</p>
+        <!-- Data Status Indicator -->
+      
+      </div>
+
+      <!-- Mode Selection & Controls -->
+      <div class="mode-controls">
+        <div class="mode-selector">
+          <button class="mode-button active" data-mode="feed">📡 Live Feed</button>
+          <button class="mode-button" data-mode="browse"> Browse Archive</button>
+        </div>
+        
+        <!-- Feed Mode Controls -->
+        <div class="mode-panel active" data-mode="feed">
+          <div class="control-group">
+            <button id="refresh-data-btn" class="primary-btn">🔄 Refresh Live Data</button>
+            <div class="data-status" id="feed-status">
+              <span class="status-dot"></span>
+              <span class="status-text">Loading system...</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Browse Mode Controls -->
+        <div class="mode-panel" data-mode="browse">
+          <div class="control-group">
+            <div class="search-form">
+              <input type="number" id="year-input" placeholder="Enter Year (1900-2030)" min="1900" max="2030" class="year-input">
+              <button id="search-year-btn" class="primary-btn">🔍 Search</button>
+            </div>
+            <div class="data-status" id="browse-status">
+              <span class="status-dot"></span>
+              <span class="status-text">Waiting for search...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NEW: Impact Simulation Controls -->
+      <div class="simulation-controls">
+        <h3>Impact Simulation</h3>
+        
+        <div class="control-item">
+          <label for="size-slider">Asteroid Diameter (m):</label>
+          <input type="range" id="size-slider" min="10" max="1000" value="150" class="sim-slider">
+          <span id="size-value">150 m</span>
+        </div>
+        
+        <div class="control-item">
+          <label for="velocity-slider">Velocity (km/s):</label>
+          <input type="range" id="velocity-slider" min="5" max="70" value="25" class="sim-slider">
+          <span id="velocity-value">25 km/s</span>
+        </div>
+        
+        <div class="control-item">
+          <label for="deflection-slider">Deflection Δv (m/s):</label>
+          <input type="range" id="deflection-slider" min="0" max="1000" value="0" class="sim-slider">
+          <span id="deflection-value">0 m/s</span>
+        </div>
+        
+        <button id="apply-simulation" class="primary-btn">Apply Simulation</button>
+        <button id="reset-simulation" class="secondary-btn">Reset to Original</button>
+      </div>
+
+      <!-- Meteor Navigation -->
+      <div class="meteor-navigation">
+        <div class="nav-header">
+          <h3>Selected Meteor</h3>
+          <div class="nav-controls" id="nav-controls">
+            <button id="prev-meteor" class="nav-btn">‹</button>
+            <span class="meteor-counter" id="meteor-counter">1 / 1</span>
+            <button id="next-meteor" class="nav-btn">›</button>
+          </div>
+        </div>
+        
+        <!-- Current Meteor Display -->
+        <div class="current-meteor-display">
+          <div class="meteor-carousel" id="meteor-carousel">
+            <!-- Initial loading card -->
+            <div class="meteor-card active" data-meteor="0">
+              <div class="meteor-visual">
+                <div class="loading-placeholder">
+                  <div class="loading-spinner"></div>
+                  <p>Loading meteors...</p>
+                </div>
+              </div>
+              <div class="meteor-data">
+                <div class="data-row">
+                  <span class="data-label">Object:</span>
+                  <span class="data-value">Initializing...</span>
+                </div>
+                <div class="data-row">
+                  <span class="data-label">Diameter:</span>
+                  <span class="data-value">—</span>
+                </div>
+                <div class="data-row">
+                  <span class="data-label">Velocity:</span>
+                  <span class="data-value">—</span>
+                </div>
+                <div class="data-row">
+                  <span class="data-label">Impact Risk:</span>
+                  <span class="data-value">—</span>
+                </div>
+                <div class="data-row">
+                  <span class="data-label">Date:</span>
+                  <span class="data-value">—</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NEW: Physics Results Panel -->
+      <div class="physics-results">
+        <h4>Impact Analysis</h4>
+        <div class="results-grid">
+          <div class="result-item">
+            <span class="result-label">Energy:</span>
+            <span class="result-value" id="energy-value">—</span>
+            <span class="result-tooltip" title="Equivalent to megatons of TNT">ℹ️</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label">Crater Diameter:</span>
+            <span class="result-value" id="crater-value">—</span>
+            <span class="result-tooltip" title="Estimated crater size">ℹ️</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label">Seismic Magnitude:</span>
+            <span class="result-value" id="seismic-value">—</span>
+            <span class="result-tooltip" title="Equivalent earthquake magnitude">ℹ️</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label">Impact Type:</span>
+            <span class="result-value" id="impact-type">—</span>
+          </div>
+          <div class="result-item full-width" id="tsunami-item" style="display: none;">
+            <span class="result-label">Tsunami Radius:</span>
+            <span class="result-value" id="tsunami-value">—</span>
+            <span class="result-tooltip" title="Estimated tsunami-affected area radius">ℹ️</span>
+          </div>
+          <div class="result-item full-width" id="deflection-result" style="display: none;">
+            <span class="result-label">Deflection Status:</span>
+            <span class="result-value safe" id="deflection-status">—</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trajectory Information -->
+      <div class="trajectory-info">
+        <h4>Trajectory Analysis</h4>
+        <div class="trajectory-legend">
+          <div class="legend-item">
+            <span class="legend-dot impact"></span>
+            <span>Impact Path (Direct Hit)</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-dot miss"></span>
+            <span>Miss Path (Near Miss)</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-dot deflection"></span>
+            <span>Deflected Path</span>
+          </div>
+        </div>
+        <p class="trajectory-note">Both trajectories animate simultaneously to show potential scenarios</p>
+      </div>
+    </div>
+
+    <!-- Right Panel: Persistent Analysis Dashboard -->
+    <div class="right-panel">
+      <div class="dashboard-header">
+        <h2 class="dashboard-title">Analysis Dashboard</h2>
+        <div class="view-selector">
+          <button class="view-tab active" data-view="map">Impact Map</button>
+          <button class="view-tab" data-view="globe"> 3D Globe</button>
+          <button class="view-tab" data-view="analysis"> Analysis</button>
+        </div>
+      </div>
+
+      <div class="dashboard-content">
+        <!-- Map View -->
+        <div class="view-panel active" data-view="map">
+          <div class="panel-header">
+            <h3>Impact Zone Mapping</h3>
+            <div class="live-indicator">
+              <span class="status-dot live"></span>
+              <span>Live Tracking</span>
+            </div>
+          </div>
+          <div class="visualization-wrapper">
+            <div id="impact-map" class="visualization-area"></div>
+          </div>
+          <div class="map-info">
+            <div class="info-item">🔴 Impact Zone</div>
+            <div class="info-item">🔵 Detection Radius</div>
+            <div class="info-item">🟡 Crater Radius</div>
+            <div class="info-item">🔷 Tsunami Zone</div>
+          </div>
+        </div>
+
+        <!-- Globe View -->
+        <div class="view-panel" data-view="globe">
+          <div class="panel-header">
+            <h3>3D Trajectory Visualization</h3>
+            <div class="globe-controls">
+              <button class="control-btn" id="reset-globe-view">Reset</button>
+              <button class="control-btn" id="toggle-globe-rotation">Rotate</button>
+            </div>
+          </div>
+          <div class="visualization-wrapper">
+            <div id="three-globe" class="visualization-area"></div>
+          </div>
+          <div class="globe-info">
+            <p><strong>Red:</strong> Direct impact trajectory</p>
+            <p><strong>Cyan:</strong> Parallel miss trajectory</p>
+            <p><strong>Green:</strong> Deflected trajectory</p>
+            <p>Trajectories synchronized based on real meteor data</p>
+          </div>
+        </div>
+
+        <!-- Analysis View -->
+        <div class="view-panel" data-view="analysis">
+          <div class="panel-header">
+            <h3>Detailed Analysis</h3>
+          </div>
+          <div class="analysis-dashboard">
+            <div class="analysis-section">
+              <h4>Risk Assessment</h4>
+              <div class="risk-display">
+                <div class="risk-meter">
+                  <div class="risk-fill" id="risk-level" style="width: 0%"></div>
+                </div>
+                <div class="risk-text" id="risk-assessment">Calculating...</div>
+              </div>
+            </div>
+            
+            <div class="analysis-section">
+              <h4>Trajectory Metrics</h4>
+              <div class="metrics-grid">
+                <div class="metric-item">
+                  <span class="metric-label">Velocity:</span>
+                  <span class="metric-value" id="velocity-display">—</span>
+                </div>
+                <div class="metric-item">
+                  <span class="metric-label">Miss Distance:</span>
+                  <span class="metric-value" id="miss-distance-display">—</span>
+                </div>
+                <div class="metric-item">
+                  <span class="metric-label">Diameter:</span>
+                  <span class="metric-value" id="diameter-display">—</span>
+                </div>
+                <div class="metric-item">
+                  <span class="metric-label">Detection Time:</span>
+                  <span class="metric-value" id="detection-time-display">—</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="analysis-section full-width">
+              <h4>Impact Probability Timeline</h4>
+              <div class="timeline-display" id="impact-timeline">
+                <div class="timeline-placeholder">
+                  Advanced timeline visualization will be displayed here based on selected meteor data.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div> <!-- closes app-container -->
+
+  <!-- App JS -->
+  <script type="module" src="/static/physics.js"></script>
+  <script type="module" src="/static/index.js"></script>
+  <script type="module" src="/static/globe.js"></script>
+</body>
+</html>
+<!-- [file content end] -->
