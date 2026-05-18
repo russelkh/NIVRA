@@ -70,3 +70,6 @@ We used AI-assisted tools (ChatGPT) for **debugging, documentation, and refining
 - OpenStreetMap: https://www.openstreetmap.org/  
 
 ---
+## Certifications
+
+[NASA CERTIFICATE.pdf](https://github.com/user-attachments/files/27970440/NASA.CERTIFICATE.pdf)
