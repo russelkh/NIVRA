@@ -1,3 +1,4 @@
+<img width="1682" height="1300" alt="nasa space apps" src="https://github.com/user-attachments/assets/6db4fae7-157e-4017-b2b2-1131cba6cadd" />
 # ☄️ Asteroid Impact Simulation Tool  
 
 **Project Giga HACKS – NASA Space Apps Challenge 2025**  
@@ -71,5 +72,6 @@ We used AI-assisted tools (ChatGPT) for **debugging, documentation, and refining
 
 ---
 ## Certifications
+<img width="1682" height="1300" alt="nasa space apps" src="https://github.com/user-attachments/assets/dc1eb803-dc9c-4341-b1d2-dc442e8fe069" />
 
-[NASA CERTIFICATE.pdf](https://github.com/user-attachments/files/27970440/NASA.CERTIFICATE.pdf)
+
