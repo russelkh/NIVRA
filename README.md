@@ -1,4 +1,4 @@
-<img width="1682" height="1300" alt="nasa space apps" src="https://github.com/user-attachments/assets/6db4fae7-157e-4017-b2b2-1131cba6cadd" />
+
 # ☄️ Asteroid Impact Simulation Tool  
 
 **Project Giga HACKS – NASA Space Apps Challenge 2025**  
